@@ -6,12 +6,14 @@ st.title("Test Base de Données")
 try:
     engine = create_engine(st.secrets["postgres"]["url"])
     with engine.connect() as conn:
-        # Test insertion
-        conn.execute(text("INSERT INTO label (nom, pays) VALUES ('Test Label', 'France')"))
-        conn.commit()
+        # Liste des tables
+        tables = conn.execute(text("""
+            SELECT table_name 
+            FROM information_schema.tables 
+            WHERE table_schema = 'public'
+        """)).fetchall()
         
-        # Vérification
-        result = conn.execute(text("SELECT COUNT(*) FROM label")).scalar()
-        st.success(f"Connexion OK - {result} labels trouvés")
+        st.success("Connexion OK")
+        st.write("Tables disponibles:", [table[0] for table in tables])
 except Exception as e:
     st.error(f"Erreur: {str(e)}")
