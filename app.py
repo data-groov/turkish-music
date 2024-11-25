@@ -9,3 +9,8 @@ df = conn.query('SELECT * FROM chanson;', ttl="10m")
 # Print results.
 for row in df.itertuples():
     st.write(f"{row.name} has a :{row.pet}:")
+
+
+import streamlit as st
+
+st.write("Test")  # Ceci devrait au moins afficher "Test"
