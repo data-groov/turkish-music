@@ -1,16 +1,13 @@
 import streamlit as st
+import pandas as pd
+from sqlalchemy import create_engine
 
-# Initialize connection.
-conn = st.connection("postgresql", type="sql")
+st.title("Test Base de Données")
 
-# Perform query.
-df = conn.query('SELECT * FROM chanson;', ttl="10m")
-
-# Print results.
-for row in df.itertuples():
-    st.write(f"{row.name} has a :{row.pet}:")
-
-
-import streamlit as st
-
-st.write("Test")  # Ceci devrait au moins afficher "Test"
+try:
+    engine = create_engine(st.secrets["postgres"]["url"])
+    with engine.connect() as conn:
+        result = conn.execute("SELECT COUNT(*) FROM release").fetchone()[0]
+        st.success(f"Connexion OK - {result} releases trouvées")
+except Exception as e:
+    st.error(f"Erreur: {str(e)}")
